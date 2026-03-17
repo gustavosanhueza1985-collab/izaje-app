@@ -1,0 +1,858 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Izaje — Grúas Telescópicas</title>
+<style>
+:root{
+  --bg:#ffffff;--bg2:#f5f5f3;--bg3:#ededea;
+  --text:#1a1a18;--text2:#6b6b67;--text3:#9b9b96;
+  --border:rgba(0,0,0,0.12);--border2:rgba(0,0,0,0.22);
+  --radius:10px;--radius-sm:7px;
+  --blue:#185FA5;--blue2:#0C447C;--blue-l:#E6F1FB;
+  --green-bg:#EAF3DE;--green-b:#3B6D11;--green-t:#27500A;--green-d:#C0DD97;
+  --amber-bg:#FAEEDA;--amber-b:#854F0B;--amber-t:#633806;--amber-d:#FAC775;
+  --red-bg:#FCEBEB;--red-b:#A32D2D;--red-t:#791F1F;--red-d:#F7C1C1;
+  --purple:#3C3489;--purple-l:#AFA9EC;
+  --teal:#0F6E56;--teal-l:#5DCAA5;
+}
+@media(prefers-color-scheme:dark){
+  :root{
+    --bg:#1e1e1c;--bg2:#2a2a27;--bg3:#333330;
+    --text:#f0f0ec;--text2:#a0a09a;--text3:#6b6b65;
+    --border:rgba(255,255,255,0.1);--border2:rgba(255,255,255,0.2);
+    --blue-l:#0a2a4a;
+    --green-bg:#162610;--green-b:#639922;--green-t:#97C459;--green-d:#C0DD97;
+    --amber-bg:#2a1e08;--amber-b:#EF9F27;--amber-t:#FAC775;--amber-d:#FAEEDA;
+    --red-bg:#2a0e0e;--red-b:#E24B4A;--red-t:#F09595;--red-d:#FCEBEB;
+  }
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;background:var(--bg3);color:var(--text);min-height:100vh}
+.app{max-width:760px;margin:0 auto;padding:1rem}
+/* header */
+.hdr{display:flex;align-items:center;gap:14px;background:var(--bg);border:0.5px solid var(--border);border-radius:var(--radius);padding:1rem 1.25rem;margin-bottom:.9rem;box-shadow:0 1px 4px rgba(0,0,0,.06)}
+.hdr-icon{width:48px;height:48px;background:var(--blue);border-radius:var(--radius-sm);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+/* tabs */
+.tab-bar{display:flex;gap:3px;background:var(--bg2);border:0.5px solid var(--border);border-radius:var(--radius-sm);padding:3px;margin-bottom:.9rem}
+.tab{flex:1;padding:9px 4px;text-align:center;font-size:13px;border-radius:6px;cursor:pointer;color:var(--text2);background:transparent;border:none;font-family:inherit;transition:all .12s}
+.tab.active{background:var(--bg);color:var(--text);font-weight:600;border:0.5px solid var(--border)}
+/* sections */
+.sec{background:var(--bg);border:0.5px solid var(--border);border-radius:var(--radius);padding:1rem 1.25rem;margin-bottom:.9rem;box-shadow:0 1px 3px rgba(0,0,0,.04)}
+.sec-title{font-size:11px;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:.06em;margin-bottom:12px}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
+.f label{font-size:13px;color:var(--text2);display:block;margin-bottom:4px}
+.f input,.f select{width:100%;font-size:15px;padding:10px 12px;border:0.5px solid var(--border2);border-radius:var(--radius-sm);background:var(--bg2);color:var(--text);font-family:inherit;transition:border-color .12s}
+.f input:focus,.f select:focus{outline:none;border-color:var(--blue);box-shadow:0 0 0 3px rgba(24,95,165,.15)}
+/* buttons */
+.btn-main{width:100%;padding:14px;font-size:15px;font-weight:600;background:var(--blue);color:#fff;border:none;border-radius:var(--radius-sm);cursor:pointer;font-family:inherit;transition:background .12s}
+.btn-main:hover{background:var(--blue2)}
+.btn-main:active{transform:scale(.98)}
+.btn-sec{padding:8px 14px;font-size:13px;font-weight:500;background:var(--bg2);color:var(--text);border:0.5px solid var(--border2);border-radius:var(--radius-sm);cursor:pointer;font-family:inherit}
+.btn-sec:hover{background:var(--bg3)}
+.btn-danger{padding:7px 13px;font-size:13px;background:var(--red-bg);color:var(--red-t);border:0.5px solid var(--red-b);border-radius:var(--radius-sm);cursor:pointer;font-family:inherit}
+/* grua selector */
+.tipo-wrap{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:10px}
+.tipo-btn{padding:8px 14px;border-radius:20px;font-size:13px;border:0.5px solid var(--border2);background:var(--bg2);color:var(--text);cursor:pointer;font-family:inherit;transition:all .12s;white-space:nowrap}
+.tipo-btn.sel{background:var(--blue);color:#fff;border-color:var(--blue)}
+.tipo-btn.custom{border-color:var(--green-b);background:var(--green-bg);color:var(--green-t)}
+.tipo-btn.custom.sel{background:var(--green-b);color:#fff}
+/* result cards */
+.rcard{border-radius:var(--radius);padding:1rem 1.2rem;margin-bottom:10px;cursor:pointer;border:2px solid transparent;transition:all .12s}
+.rcard.ok{background:var(--green-bg);border-color:var(--green-b)}
+.rcard.warn{background:var(--amber-bg);border-color:var(--amber-b)}
+.rcard.nok{background:var(--red-bg);border-color:var(--red-b)}
+.rcard:hover{filter:brightness(.97)}
+.rc-hdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
+.rc-name{font-size:15px;font-weight:600}
+.rc-name.ok{color:var(--green-t)}.rc-name.warn{color:var(--amber-t)}.rc-name.nok{color:var(--red-t)}
+.badge{font-size:12px;font-weight:600;padding:3px 11px;border-radius:20px}
+.badge.ok{background:var(--green-d);color:var(--green-t)}
+.badge.warn{background:var(--amber-d);color:var(--amber-t)}
+.badge.nok{background:var(--red-d);color:var(--red-t)}
+.pbar-bg{height:8px;background:rgba(0,0,0,.1);border-radius:4px;overflow:hidden;margin-top:5px}
+.pbar{height:100%;border-radius:4px;transition:width .5s}
+.pbar.ok{background:#639922}.pbar.warn{background:#EF9F27}.pbar.nok{background:#E24B4A}
+.pbar-row{display:flex;justify-content:space-between;font-size:12px;color:var(--text2);margin-bottom:3px}
+.hidden{display:none!important}
+/* detail panel */
+.dtl{background:var(--bg);border:0.5px solid var(--border);border-radius:var(--radius);padding:1rem 1.25rem;margin-top:10px}
+.dtl-g{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
+.di{background:var(--bg2);border-radius:var(--radius-sm);padding:9px 12px}
+.di-lbl{font-size:11px;color:var(--text2);margin-bottom:3px}
+.di-val{font-size:14px;font-weight:500;color:var(--text)}
+.di-val.ok{color:var(--green-t)}.di-val.warn{color:var(--amber-t)}.di-val.nok{color:var(--red-t)}
+.wi{display:flex;gap:8px;align-items:flex-start;font-size:13px;line-height:1.5;
+    color:var(--amber-t);background:var(--amber-bg);border-radius:var(--radius-sm);padding:8px 11px;margin-top:7px}
+.wi.err{color:var(--red-t);background:var(--red-bg)}
+/* checklist */
+.chk-item{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:0.5px solid var(--border);font-size:14px;cursor:pointer;user-select:none}
+.chk-item:last-child{border-bottom:none}
+.chk-box{width:24px;height:24px;border-radius:5px;border:1.5px solid var(--border2);display:flex;align-items:center;justify-content:center;flex-shrink:0;background:var(--bg2);transition:all .1s}
+.chk-box.chked{background:var(--green-b);border-color:var(--green-b)}
+.chk-box.chked::after{content:'';display:block;width:6px;height:11px;border:2.5px solid #fff;border-top:none;border-left:none;transform:rotate(45deg) translateY(-1px)}
+/* tables */
+.cap-table{width:100%;border-collapse:collapse;font-size:13px;margin-top:8px}
+.cap-table th{padding:7px 8px;text-align:center;background:var(--bg2);font-weight:600;font-size:12px;color:var(--text2);border-bottom:0.5px solid var(--border)}
+.cap-table td{padding:7px 8px;text-align:center;border-bottom:0.5px solid var(--border);color:var(--text)}
+.cap-table tr:last-child td{border-bottom:none}
+.cap-table tr:hover td{background:var(--bg2)}
+.custom-row{display:flex;gap:7px;margin-bottom:7px}
+.custom-row input{flex:1;font-size:14px;padding:8px 10px;border:0.5px solid var(--border2);border-radius:var(--radius-sm);background:var(--bg2);color:var(--text);font-family:inherit}
+.grua-card{background:var(--bg2);border-radius:var(--radius-sm);padding:11px 13px;margin-bottom:9px;border:0.5px solid var(--border)}
+.grua-card-hdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:4px}
+.tag-ok{background:var(--green-bg);color:var(--green-t);font-size:11px;padding:2px 9px;border-radius:10px;margin-left:7px}
+/* collapsible blocks */
+.block{background:var(--bg2);border:0.5px solid var(--border);border-radius:var(--radius);margin-top:12px;overflow:hidden}
+.block-hdr{display:flex;justify-content:space-between;align-items:center;padding:11px 14px;cursor:pointer;user-select:none}
+.block-hdr-left{display:flex;align-items:center;gap:9px;font-size:13px;font-weight:600;color:var(--text)}
+.block-icon{width:24px;height:24px;border-radius:5px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;flex-shrink:0;color:#fff}
+.block-toggle{font-size:12px;color:var(--text2);background:none;border:none;cursor:pointer;font-family:inherit;white-space:nowrap}
+.block-body{padding:0 14px 14px;display:none}
+.block-body.open{display:block}
+/* math */
+.math-step{margin-bottom:14px}
+.math-step:last-child{margin-bottom:0}
+.math-step-title{font-size:11px;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:.05em;margin-bottom:7px;display:flex;align-items:center;gap:7px}
+.step-num{width:20px;height:20px;border-radius:50%;background:var(--blue);color:#fff;font-size:11px;font-weight:600;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.math-formula{background:var(--bg);border:0.5px solid var(--border);border-radius:var(--radius-sm);padding:12px 14px;font-family:'Courier New',Courier,monospace;font-size:13px;line-height:2.1}
+.math-formula .v{color:var(--blue);font-weight:700}
+.math-formula .n{color:var(--green-t);font-weight:700}
+.math-formula .r{display:block;border-top:0.5px solid var(--border);margin-top:7px;padding-top:8px;font-weight:700;font-size:14px}
+.math-formula .r.ok{color:var(--green-t)}.math-formula .r.warn{color:var(--amber-t)}.math-formula .r.nok{color:var(--red-t)}
+.divhr{height:0.5px;background:var(--border);margin:6px 0}
+.interp-table{width:100%;border-collapse:collapse;font-size:12px;margin-top:7px}
+.interp-table th{padding:5px 8px;background:var(--bg);font-weight:600;color:var(--text2);border-bottom:0.5px solid var(--border);text-align:center}
+.interp-table td{padding:5px 8px;text-align:center;border-bottom:0.5px solid var(--border);color:var(--text)}
+.interp-table tr.hi td{background:var(--blue-l);color:var(--blue2);font-weight:600}
+.sem-row{display:flex;gap:8px;margin-top:10px}
+.sem{flex:1;border-radius:var(--radius-sm);padding:9px 10px;text-align:center}
+.sem.ok{background:var(--green-bg)}.sem.warn{background:var(--amber-bg)}.sem.nok{background:var(--red-bg)}
+.sem-lbl{font-size:12px;font-weight:600}
+.sem-lbl.ok{color:var(--green-t)}.sem-lbl.warn{color:var(--amber-t)}.sem-lbl.nok{color:var(--red-t)}
+.sem-range{font-size:11px;color:var(--text2);margin-top:3px}
+/* croquis */
+.croquis-svg{width:100%;display:block}
+/* misc */
+.no-result{text-align:center;color:var(--text2);font-size:14px;padding:3rem 1rem}
+@media(max-width:520px){
+  .g2,.g3,.dtl-g{grid-template-columns:1fr}
+  .sem-row{flex-direction:column}
+  .tab{font-size:12px;padding:8px 2px}
+}
+</style>
+</head>
+<body>
+<div class="app">
+
+<!-- HEADER -->
+<div class="hdr">
+  <div class="hdr-icon">
+    <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
+      <rect x="12" y="2" width="4" height="19" rx="1.5" fill="rgba(255,255,255,.7)"/>
+      <rect x="4" y="2" width="11" height="3" rx="1.2" fill="rgba(255,255,255,.5)"/>
+      <rect x="3.5" y="20" width="17" height="3.5" rx="1.8" fill="rgba(255,255,255,.5)"/>
+      <line x1="14" y1="5" x2="7" y2="13" stroke="rgba(255,255,255,.85)" stroke-width="1.8" stroke-linecap="round"/>
+      <circle cx="7" cy="13.5" r="2.5" fill="white"/>
+    </svg>
+  </div>
+  <div>
+    <p style="font-size:17px;font-weight:700;color:var(--text)">Izaje — Grúas Telescópicas</p>
+    <p style="font-size:12px;color:var(--text2)">Selector de maniobras · Croquis técnico · Cálculo detallado</p>
+  </div>
+</div>
+
+<!-- TABS -->
+<div class="tab-bar">
+  <button class="tab active" onclick="goTab('datos')">⚙ Datos</button>
+  <button class="tab" onclick="goTab('gruas')">🏗 Grúas</button>
+  <button class="tab" onclick="goTab('resultado')">📊 Resultado</button>
+  <button class="tab" onclick="goTab('checklist')">✓ Checklist</button>
+</div>
+
+<!-- ═══════════ TAB DATOS ═══════════ -->
+<div id="tab-datos">
+  <div class="sec">
+    <div class="sec-title">Datos de la carga y maniobra</div>
+    <div class="g2">
+      <div class="f"><label>Peso bruto de carga (ton)</label><input type="number" id="peso" placeholder="0.0" step="0.1" min="0.1"></div>
+      <div class="f"><label>Radio de trabajo (m)</label><input type="number" id="radio" placeholder="0" step="0.5" min="0.5"></div>
+      <div class="f"><label>Altura de izaje (m)</label><input type="number" id="altura" placeholder="0" step="0.5" min="0.5"></div>
+      <div class="f"><label>Velocidad viento (km/h)</label><input type="number" id="viento" placeholder="0" step="1" min="0" value="0"></div>
+    </div>
+  </div>
+  <div class="sec">
+    <div class="sec-title">Condiciones y factores</div>
+    <div class="g2">
+      <div class="f"><label>Condición del suelo</label>
+        <select id="suelo">
+          <option value="1.0">Firme / hormigón</option>
+          <option value="0.9" selected>Compactado normal</option>
+          <option value="0.75">Blando / irregular</option>
+          <option value="0.6">Con tableros</option>
+        </select>
+      </div>
+      <div class="f"><label>Factor de impacto</label>
+        <select id="impacto">
+          <option value="1.0">Estático — 0%</option>
+          <option value="1.05">Lento — +5%</option>
+          <option value="1.1" selected>Normal — +10%</option>
+          <option value="1.15">Dinámico — +15%</option>
+        </select>
+      </div>
+    </div>
+  </div>
+  <div class="sec">
+    <div class="sec-title">Seleccionar grúa</div>
+    <div class="tipo-wrap" id="tipo-wrap"></div>
+    <div class="f" style="margin-top:8px"><label>Extensión de pluma</label>
+      <select id="pluma">
+        <option value="0.6">60% — Pluma corta</option>
+        <option value="0.75">75% — Pluma 3/4</option>
+        <option value="1.0" selected>100% — Pluma completa</option>
+      </select>
+    </div>
+  </div>
+  <button class="btn-main" onclick="calcular()">Calcular maniobras recomendadas →</button>
+</div>
+
+<!-- ═══════════ TAB GRÚAS ═══════════ -->
+<div id="tab-gruas" class="hidden">
+  <div class="sec">
+    <div class="sec-title">Grúas predefinidas</div>
+    <div id="gruas-predefs"></div>
+  </div>
+  <div class="sec">
+    <div class="sec-title">Agregar grúa personalizada</div>
+    <div class="g2" style="margin-bottom:12px">
+      <div class="f"><label>Nombre / modelo</label><input type="text" id="c-nombre" placeholder="Ej: Grove GMK 5150"></div>
+      <div class="f"><label>Long. pluma máx. (m)</label><input type="number" id="c-boom" placeholder="0" min="0" step="1"></div>
+      <div class="f"><label>Contrapeso (ton)</label><input type="number" id="c-cpeso" placeholder="0" min="0" step="0.1"></div>
+    </div>
+    <p style="font-size:12px;color:var(--text2);margin-bottom:9px">Tabla de capacidades — pares Radio (m) / Capacidad (ton):</p>
+    <div id="cap-rows">
+      <div class="custom-row"><input type="number" placeholder="Radio (m)" class="cr" step="0.5" min="0"><input type="number" placeholder="Cap. (ton)" class="cc" step="0.1" min="0"><button class="btn-sec" onclick="removeCapRow(this)">✕</button></div>
+      <div class="custom-row"><input type="number" placeholder="Radio (m)" class="cr" step="0.5" min="0"><input type="number" placeholder="Cap. (ton)" class="cc" step="0.1" min="0"><button class="btn-sec" onclick="removeCapRow(this)">✕</button></div>
+      <div class="custom-row"><input type="number" placeholder="Radio (m)" class="cr" step="0.5" min="0"><input type="number" placeholder="Cap. (ton)" class="cc" step="0.1" min="0"><button class="btn-sec" onclick="removeCapRow(this)">✕</button></div>
+    </div>
+    <div style="display:flex;gap:8px;margin-top:10px">
+      <button class="btn-sec" onclick="addCapRow()">+ Agregar fila</button>
+      <button class="btn-main" style="flex:1" onclick="guardarGrua()">Guardar grúa</button>
+    </div>
+    <div id="grua-msg" style="margin-top:9px;font-size:13px"></div>
+  </div>
+  <div class="sec hidden" id="gruas-custom-sec">
+    <div class="sec-title">Grúas personalizadas</div>
+    <div id="gruas-custom-list"></div>
+  </div>
+</div>
+
+<!-- ═══════════ TAB RESULTADO ═══════════ -->
+<div id="tab-resultado" class="hidden">
+  <div id="res-container"><div class="no-result">Ingresa los datos y presiona calcular</div></div>
+  <div id="dtl-panel" class="hidden"></div>
+</div>
+
+<!-- ═══════════ TAB CHECKLIST ═══════════ -->
+<div id="tab-checklist" class="hidden">
+  <div class="sec">
+    <div class="sec-title">Checklist pre-izaje</div>
+    <div id="chk-items"></div>
+  </div>
+  <div id="chk-status" style="margin-top:8px"></div>
+</div>
+
+</div><!-- /app -->
+
+<script>
+/* ═══════════ DATA ═══════════ */
+var GP=[
+  {id:'ltm1100',nombre:'LTM 1100-4.2',boom:60,cpeso:6.8,cap:[[10,10],[15,8],[20,6],[25,4.5],[30,3],[35,2]]},
+  {id:'ltm1200',nombre:'LTM 1200-5.1',boom:72,cpeso:9.5,cap:[[10,15],[15,11],[20,8],[25,6],[30,4.5],[35,3.5]]},
+  {id:'ltm1350',nombre:'LTM 1350-6.2',boom:84,cpeso:14,cap:[[10,22],[15,17],[20,13],[25,10],[30,7.5],[35,6]]},
+  {id:'ltm1500',nombre:'LTM 1500-8.1',boom:100,cpeso:20,cap:[[10,35],[15,27],[20,20],[25,15],[30,12],[35,9]]},
+  {id:'gmk4100',nombre:'Grove GMK 4100',boom:60,cpeso:7.5,cap:[[10,11],[15,9],[20,6.5],[25,5],[30,3.5],[35,2.5]]}
+];
+var GC=[],gruaSelId='ltm1100',mCalc=null,chkState={},lastInp={},lastGrua=null;
+
+var CHECKS=['Certificado de operador vigente','Inspección visual pluma, cables y poleas','Verificación de ganchos, grilletes y eslingas','Plan de izaje revisado y firmado por supervisor','Estabilizadores completamente extendidos','Nivelación de grúa verificada (burbuja al centro)','Zona despejada bajo la carga','Viento medido y dentro del límite del fabricante','Peso real verificado con balanza o dato técnico','Comunicaciones radiales operativas y probadas','Señalero identificado y en posición','Rigger certificado en terreno','Capacidad verificada en tabla del fabricante','Terreno evaluado — tableros si corresponde'];
+
+/* ═══════════ UTILS ═══════════ */
+function allG(){return GP.concat(GC);}
+function gById(id){return allG().find(function(g){return g.id===id;});}
+
+function getInterp(radio,cap,fp,fs){
+  var s=cap.slice().sort(function(a,b){return a[0]-b[0];});
+  var raw,r1,c1,r2,c2,t=null,ext=false;
+  if(radio<=s[0][0]){raw=s[0][1];r1=s[0][0];c1=s[0][1];ext=radio<s[0][0];}
+  else if(radio>=s[s.length-1][0]){raw=s[s.length-1][1];r1=s[s.length-1][0];c1=s[s.length-1][1];ext=true;}
+  else{for(var i=0;i<s.length-1;i++){if(radio>=s[i][0]&&radio<=s[i+1][0]){t=(radio-s[i][0])/(s[i+1][0]-s[i][0]);raw=s[i][1]+t*(s[i+1][1]-s[i][1]);r1=s[i][0];c1=s[i][1];r2=s[i+1][0];c2=s[i+1][1];break;}}}
+  return{raw:raw,final:raw*fp*fs,r1:r1,c1:c1,r2:r2,c2:c2,t:t,ext:ext,table:s};
+}
+
+function st(pct){return pct<=75?'ok':pct<=90?'warn':'nok';}
+function stLabel(s){return s==='ok'?'Recomendada':s==='warn'?'Con precaución':'No recomendada';}
+function stColor(s){return s==='ok'?'#3B6D11':s==='warn'?'#854F0B':'#A32D2D';}
+function stFill(s){return s==='ok'?'#EAF3DE':s==='warn'?'#FAEEDA':'#FCEBEB';}
+
+/* ═══════════ RENDER GRÚAS ═══════════ */
+function renderTipoBtns(){
+  var w=document.getElementById('tipo-wrap');w.innerHTML='';
+  allG().forEach(function(g){
+    var isC=!!GC.find(function(c){return c.id===g.id;});
+    var b=document.createElement('button');
+    b.className='tipo-btn'+(g.id===gruaSelId?' sel':'')+(isC?' custom':'');
+    b.textContent=g.nombre;
+    b.onclick=function(){gruaSelId=g.id;document.querySelectorAll('.tipo-btn').forEach(function(x){x.classList.remove('sel');});b.classList.add('sel');};
+    w.appendChild(b);
+  });
+}
+
+function renderGruasPredef(){
+  var c=document.getElementById('gruas-predefs');c.innerHTML='';
+  GP.forEach(function(g){
+    var d=document.createElement('div');d.className='grua-card';
+    d.innerHTML='<div class="grua-card-hdr"><span style="font-size:14px;font-weight:600">'+g.nombre+'</span><span class="tag-ok">Predefinida</span></div>'+
+      '<p style="font-size:12px;color:var(--text2);margin-top:4px">Pluma: '+g.boom+' m · Contrapeso: '+g.cpeso+' ton</p>'+
+      '<table class="cap-table"><tr><th>Radio (m)</th><th>Capacidad (ton)</th></tr>'+
+      g.cap.map(function(r){return'<tr><td>'+r[0]+'</td><td>'+r[1]+'</td></tr>';}).join('')+'</table>';
+    c.appendChild(d);
+  });
+}
+
+function renderGruasCustom(){
+  var sec=document.getElementById('gruas-custom-sec'),list=document.getElementById('gruas-custom-list');
+  if(!GC.length){sec.classList.add('hidden');return;}
+  sec.classList.remove('hidden');list.innerHTML='';
+  GC.forEach(function(g,i){
+    var d=document.createElement('div');d.className='grua-card';
+    d.innerHTML='<div class="grua-card-hdr"><span style="font-size:14px;font-weight:600">'+g.nombre+'</span><button class="btn-danger" onclick="eliminarGrua('+i+')">Eliminar</button></div>'+
+      '<p style="font-size:12px;color:var(--text2);margin-top:4px">Pluma: '+g.boom+' m · Contrapeso: '+g.cpeso+' ton</p>'+
+      '<table class="cap-table"><tr><th>Radio (m)</th><th>Cap. (ton)</th></tr>'+
+      g.cap.map(function(r){return'<tr><td>'+r[0]+'</td><td>'+r[1]+'</td></tr>';}).join('')+'</table>';
+    list.appendChild(d);
+  });
+}
+
+function addCapRow(){
+  var r=document.getElementById('cap-rows'),d=document.createElement('div');
+  d.className='custom-row';
+  d.innerHTML='<input type="number" placeholder="Radio (m)" class="cr" step="0.5" min="0"><input type="number" placeholder="Cap. (ton)" class="cc" step="0.1" min="0"><button class="btn-sec" onclick="removeCapRow(this)">✕</button>';
+  r.appendChild(d);
+}
+function removeCapRow(btn){if(document.getElementById('cap-rows').querySelectorAll('.custom-row').length>1)btn.parentNode.remove();}
+
+function guardarGrua(){
+  var nombre=document.getElementById('c-nombre').value.trim();
+  var boom=parseFloat(document.getElementById('c-boom').value)||0;
+  var cpeso=parseFloat(document.getElementById('c-cpeso').value)||0;
+  var cap=[];
+  document.getElementById('cap-rows').querySelectorAll('.custom-row').forEach(function(row){
+    var r=parseFloat(row.querySelector('.cr').value),c=parseFloat(row.querySelector('.cc').value);
+    if(!isNaN(r)&&!isNaN(c)&&r>0&&c>0)cap.push([r,c]);
+  });
+  var msg=document.getElementById('grua-msg');
+  if(!nombre){msg.style.color='var(--red-t)';msg.textContent='Ingresa un nombre.';return;}
+  if(cap.length<2){msg.style.color='var(--red-t)';msg.textContent='Ingresa al menos 2 puntos de capacidad.';return;}
+  cap.sort(function(a,b){return a[0]-b[0];});
+  GC.push({id:'c_'+Date.now(),nombre:nombre,boom:boom,cpeso:cpeso,cap:cap});
+  msg.style.color='var(--green-t)';msg.textContent='Grúa "'+nombre+'" guardada.';
+  document.getElementById('c-nombre').value='';document.getElementById('c-boom').value='';document.getElementById('c-cpeso').value='';
+  document.getElementById('cap-rows').querySelectorAll('.custom-row').forEach(function(row,i){if(i>0)row.remove();else row.querySelectorAll('input').forEach(function(inp){inp.value='';});});
+  renderTipoBtns();renderGruasCustom();
+  setTimeout(function(){msg.textContent='';},3000);
+}
+function eliminarGrua(i){if(gruaSelId===GC[i].id)gruaSelId=GP[0].id;GC.splice(i,1);renderTipoBtns();renderGruasCustom();}
+
+/* ═══════════ CROQUIS SVG ILUSTRADO ═══════════ */
+function buildCroquis(mNombre, inp, grua){
+  var peso=inp.peso,radio=inp.radio,altura=inp.altura,viento=inp.viento;
+  var plumaLong=Math.round(grua.boom*inp.pluma);
+  var pct=inp.pctManiobra, s=st(pct);
+  var sc=stColor(s),sf=stFill(s);
+  var stLbl=pct<=75?'APTO':pct<=90?'PRECAUCIÓN':'NO APTO';
+
+  var isTandem=mNombre.toLowerCase().indexOf('t')>=0&&mNombre.toLowerCase().indexOf('ndem')>=0;
+  var isSuperlift=mNombre.toLowerCase().indexOf('superlift')>=0;
+  var isJib=mNombre.toLowerCase().indexOf('jib')>=0;
+
+  var W=660,H=460,GY=H-65;
+
+  // escala dinámica
+  var maxV=Math.max(plumaLong,altura+10,25);
+  var maxH=Math.max(radio+15,plumaLong*0.5,20);
+  var sv=Math.min((GY-100)/maxV,9);
+  var sh=Math.min(170/maxH,9);
+  var scale=Math.min(sv,sh,8);
+
+  var BX=isTandem?110:145;
+  var BY=GY;
+  var heightPx=altura*scale;
+  var radioPx=radio*scale;
+  var plumaPx=plumaLong*scale;
+  var ang=Math.atan2(heightPx+15,radioPx);
+
+  var tipX=BX+Math.cos(ang)*plumaPx;
+  var tipY=BY-Math.sin(ang)*plumaPx-92;
+  var loadX=BX+radioPx;
+  var loadY=BY-heightPx;
+
+  var out='<svg viewBox="0 0 '+W+' '+H+'" xmlns="http://www.w3.org/2000/svg" class="croquis-svg">';
+
+  // fondo cuadriculado
+  out+='<rect width="'+W+'" height="'+H+'" fill="#f8f8f6" rx="6"/>';
+  for(var gx=0;gx<=W;gx+=20)out+='<line x1="'+gx+'" y1="32" x2="'+gx+'" y2="'+H+'" stroke="#e8e8e4" stroke-width="0.4"/>';
+  for(var gy=32;gy<=H;gy+=20)out+='<line x1="0" y1="'+gy+'" x2="'+W+'" y2="'+gy+'" stroke="#e8e8e4" stroke-width="0.4"/>';
+  out+='<rect x="2" y="2" width="'+(W-4)+'" height="'+(H-4)+'" fill="none" stroke="#c8c8c4" stroke-width="1.2" rx="5"/>';
+
+  // cabecera
+  out+='<rect x="2" y="2" width="'+(W-4)+'" height="30" fill="#f0f0ec" rx="5"/>';
+  out+='<line x1="2" y1="32" x2="'+(W-2)+'" y2="32" stroke="#c8c8c4" stroke-width="0.8"/>';
+  var typeLabel={'simple':'IZAJE SIMPLE','superlift':'IZAJE CON SUPERLIFT','tandem':'IZAJE EN TÁNDEM','jib':'IZAJE CON JIB FIJO'};
+  var mKey=isTandem?'tandem':isSuperlift?'superlift':isJib?'jib':'simple';
+  out+='<text x="'+(W/2)+'" y="21" text-anchor="middle" font-size="13" font-weight="700" fill="#1a1a18" font-family="system-ui,sans-serif">CROQUIS DE IZAJE — '+grua.nombre.toUpperCase()+'</text>';
+  out+='<text x="'+(W/2)+'" y="29" text-anchor="middle" font-size="8" fill="#6b6b67" font-family="system-ui,sans-serif" letter-spacing="1">'+(typeLabel[mKey]||mNombre.toUpperCase())+'</text>';
+
+  // suelo
+  out+='<line x1="2" y1="'+GY+'" x2="'+(W-2)+'" y2="'+GY+'" stroke="#5F5E5A" stroke-width="2.5"/>';
+  for(var sx2=0;sx2<W;sx2+=16)out+='<line x1="'+sx2+'" y1="'+GY+'" x2="'+(sx2-14)+'" y2="'+(GY+16)+'" stroke="#B4B2A9" stroke-width="1.2"/>';
+  out+='<text x="16" y="'+(GY+28)+'" font-size="9" fill="#888780" font-family="system-ui,sans-serif">N.T.T. — Nivel Terreno de Trabajo</text>';
+
+  /* ── función dibujo grúa ── */
+  function crane(bx,by,flip,lbl){
+    var f=flip?-1:1;
+    var pStartY=by-92;
+    var pStartX=bx;
+    var ptx=pStartX+Math.cos(ang)*plumaPx*f;
+    var pty=pStartY-Math.sin(ang)*plumaPx;
+    var lx=isTandem?(flip?bx-radioPx:bx+radioPx):loadX;
+    var ly=loadY;
+
+    // orugas
+    out+='<rect x="'+(bx-30)+'" y="'+by+'" width="60" height="14" rx="7" fill="#2C2C2A" stroke="#1a1a18" stroke-width="0.8"/>';
+    for(var rw=bx-25;rw<=bx+25;rw+=12)out+='<circle cx="'+rw+'" cy="'+(by+7)+'" r="4.5" fill="#444441"/>';
+    out+='<rect x="'+(bx-27)+'" y="'+(by+2)+'" width="54" height="10" rx="4" fill="none" stroke="#888780" stroke-width="0.6"/>';
+
+    // chasis
+    out+='<rect x="'+(bx-24)+'" y="'+(by-13)+'" width="48" height="15" rx="3" fill="#888780" stroke="#5F5E5A" stroke-width="0.8"/>';
+    out+='<circle cx="'+(bx-17)+'" cy="'+(by-6)+'" r="2.2" fill="#5F5E5A"/>';
+    out+='<circle cx="'+(bx+17)+'" cy="'+(by-6)+'" r="2.2" fill="#5F5E5A"/>';
+
+    // contrapeso / superlift
+    if(isSuperlift&&!flip){
+      out+='<line x1="'+(bx-6)+'" y1="'+(by-13)+'" x2="'+(bx-f*52)+'" y2="'+(by-50)+'" stroke="#534AB7" stroke-width="3.5" stroke-linecap="round"/>';
+      out+='<rect x="'+(bx-f*66-12)+'" y="'+(by-65)+'" width="24" height="32" rx="3" fill="#3C3489" stroke="#534AB7" stroke-width="1.5"/>';
+      out+='<text x="'+(bx-f*54)+'" y="'+(by-45)+'" text-anchor="middle" font-size="8" fill="#AFA9EC" font-family="system-ui,sans-serif">SL</text>';
+      out+='<text x="'+(bx-f*54)+'" y="'+(by-70)+'" text-anchor="middle" font-size="9" fill="#534AB7" font-family="system-ui,sans-serif" font-weight="600">Superlift</text>';
+    } else {
+      out+='<rect x="'+(bx+f*14)+'" y="'+(by-20)+'" width="20" height="16" rx="2" fill="#5F5E5A" stroke="#444441" stroke-width="0.8"/>';
+      out+='<text x="'+(bx+f*24)+'" y="'+(by-10)+'" text-anchor="middle" font-size="7" fill="#D3D1C7" font-family="system-ui,sans-serif">CP</text>';
+    }
+
+    // cabina
+    out+='<rect x="'+(bx-f*12)+'" y="'+(by-32)+'" width="22" height="21" rx="3" fill="#5F5E5A" stroke="#444441" stroke-width="0.8"/>';
+    out+='<rect x="'+(bx-f*10)+'" y="'+(by-30)+'" width="13" height="9" rx="1" fill="#B5D4F4" opacity="0.75"/>';
+    out+='<line x1="'+(bx-f*10+6)+'" y1="'+(by-30)+'" x2="'+(bx-f*10+6)+'" y2="'+(by-21)+'" stroke="#85B7EB" stroke-width="0.8"/>';
+    out+='<rect x="'+(bx+f*6)+'" y="'+(by-23)+'" width="5" height="11" rx="1" fill="#888780" stroke="#5F5E5A" stroke-width="0.5"/>';
+
+    // torre
+    out+='<rect x="'+(bx-5)+'" y="'+(by-95)+'" width="10" height="84" rx="2" fill="#5F5E5A" stroke="#444441" stroke-width="0.8"/>';
+    for(var tr=by-90;tr<by-15;tr+=18){
+      out+='<line x1="'+(bx-5)+'" y1="'+tr+'" x2="'+(bx+5)+'" y2="'+(tr+14)+'" stroke="#888780" stroke-width="0.8"/>';
+      out+='<line x1="'+(bx+5)+'" y1="'+tr+'" x2="'+(bx-5)+'" y2="'+(tr+14)+'" stroke="#888780" stroke-width="0.8"/>';
+    }
+
+    // pivote
+    out+='<circle cx="'+bx+'" cy="'+pStartY+'" r="7" fill="#378ADD" stroke="#185FA5" stroke-width="1.5"/>';
+    out+='<circle cx="'+bx+'" cy="'+pStartY+'" r="3" fill="#0C447C"/>';
+
+    // pluma telescópica segmentada
+    var segs=isSuperlift?4:3;
+    var thks=[9,6.5,4.5,3];
+    var cols=['#5F5E5A','#888780','#B4B2A9','#D3D1C7'];
+    for(var sg=0;sg<segs;sg++){
+      var t0=sg/segs,t1=(sg+1)/segs;
+      var sx0=pStartX+Math.cos(ang)*plumaPx*t0*f, sy0=pStartY-Math.sin(ang)*plumaPx*t0;
+      var sx1=pStartX+Math.cos(ang)*plumaPx*t1*f, sy1=pStartY-Math.sin(ang)*plumaPx*t1;
+      out+='<line x1="'+sx0+'" y1="'+sy0+'" x2="'+sx1+'" y2="'+sy1+'" stroke="'+cols[sg]+'" stroke-width="'+thks[sg]+'" stroke-linecap="round"/>';
+    }
+    // línea de detalle pluma (brillo)
+    out+='<line x1="'+pStartX+'" y1="'+(pStartY-2)+'" x2="'+ptx+'" y2="'+(pty-2)+'" stroke="rgba(255,255,255,0.25)" stroke-width="1.5" stroke-linecap="round"/>';
+
+    var cableEnd;
+    if(isJib&&!flip){
+      var jl=Math.min(55,plumaPx*0.28);
+      var ja=ang+0.42;
+      var jx1=ptx+Math.cos(ja)*jl*f, jy1=pty-Math.sin(ja)*jl;
+      out+='<line x1="'+ptx+'" y1="'+pty+'" x2="'+jx1+'" y2="'+jy1+'" stroke="#0F6E56" stroke-width="5" stroke-linecap="round"/>';
+      out+='<line x1="'+ptx+'" y1="'+pty+'" x2="'+jx1+'" y2="'+jy1+'" stroke="#5DCAA5" stroke-width="2.5" stroke-linecap="round"/>';
+      out+='<circle cx="'+jx1+'" cy="'+jy1+'" r="5" fill="#1D9E75" stroke="#0F6E56" stroke-width="1.5"/>';
+      out+='<circle cx="'+jx1+'" cy="'+jy1+'" r="2" fill="#0F6E56"/>';
+      out+='<text x="'+(jx1+9*f)+'" y="'+(jy1-6)+'" font-size="9" fill="#0F6E56" font-weight="600" font-family="system-ui,sans-serif">JIB</text>';
+      cableEnd={x:jx1,y:jy1};
+    } else {
+      out+='<circle cx="'+ptx+'" cy="'+pty+'" r="6" fill="#85B7EB" stroke="#185FA5" stroke-width="1.5"/>';
+      out+='<circle cx="'+ptx+'" cy="'+pty+'" r="2.5" fill="#0C447C"/>';
+      cableEnd={x:ptx,y:pty};
+    }
+
+    // cable desde polea a gancho
+    out+='<line x1="'+cableEnd.x+'" y1="'+cableEnd.y+'" x2="'+lx+'" y2="'+(ly)+'" stroke="#888780" stroke-width="1.8" stroke-dasharray="6,3"/>';
+
+    // estabilizadores
+    var stabLen=35;
+    [-1,1].forEach(function(side){
+      var sx3=bx+side*24,ex=bx+side*(24+stabLen);
+      out+='<line x1="'+sx3+'" y1="'+by+'" x2="'+ex+'" y2="'+by+'" stroke="#5F5E5A" stroke-width="4.5" stroke-linecap="round"/>';
+      out+='<ellipse cx="'+ex+'" cy="'+(by+5)+'" rx="10" ry="4.5" fill="#444441" stroke="#2C2C2A" stroke-width="1"/>';
+      // linea presion suelo
+      out+='<line x1="'+(ex-8)+'" y1="'+(GY)+'" x2="'+(ex+8)+'" y2="'+GY+'" stroke="#E24B4A" stroke-width="1.5"/>';
+    });
+
+    if(lbl)out+='<text x="'+bx+'" y="'+(by+26)+'" text-anchor="middle" font-size="10" font-weight="600" fill="#5F5E5A" font-family="system-ui,sans-serif">'+lbl+'</text>';
+    return{ptx:ptx,pty:pty,lx:lx,ly:ly};
+  }
+
+  var c1;
+  if(isTandem){
+    var BX2=Math.min(BX+radioPx*1.7+40,W-100);
+    loadX=(BX+BX2)/2+radioPx*0.05;
+    c1=crane(BX,BY,false,'Grúa 1');
+    var c2=crane(BX2,BY,true,'Grúa 2');
+    // barra izaje
+    out+='<rect x="'+(loadX-radioPx*0.32)+'" y="'+(loadY-8)+'" width="'+(radioPx*0.64)+'" height="11" rx="5" fill="#5F5E5A" stroke="#444441" stroke-width="1"/>';
+    // eslinga tándem
+    out+='<line x1="'+c1.lx+'" y1="'+c1.ly+'" x2="'+(loadX-radioPx*0.2)+'" y2="'+(loadY-2)+'" stroke="#888780" stroke-width="1.5"/>';
+    out+='<line x1="'+c2.lx+'" y1="'+c2.ly+'" x2="'+(loadX+radioPx*0.2)+'" y2="'+(loadY-2)+'" stroke="#888780" stroke-width="1.5"/>';
+  } else {
+    c1=crane(BX,BY,false,'');
+  }
+
+  // gancho
+  var gx=loadX,gy=loadY;
+  out+='<path d="M'+gx+','+(gy-2)+' Q'+(gx+7)+','+(gy+6)+' '+gx+','+(gy+12)+' Q'+(gx-7)+','+(gy+6)+' '+gx+','+(gy-2)+'" fill="none" stroke="#5F5E5A" stroke-width="3"/>';
+  out+='<line x1="'+gx+'" y1="'+(gy-2)+'" x2="'+(gx+5)+'" y2="'+(gy-10)+'" stroke="#5F5E5A" stroke-width="2.5"/>';
+  out+='<circle cx="'+(gx+5)+'" cy="'+(gy-12)+'" r="3" fill="#5F5E5A"/>';
+
+  // CARGA
+  var cW=Math.max(32,Math.min(60,peso*3.5)),cH=Math.max(22,Math.min(45,peso*2.8));
+  var cX=loadX-cW/2,cY=loadY+12;
+  // sombra
+  out+='<rect x="'+(cX+5)+'" y="'+(cY+5)+'" width="'+cW+'" height="'+cH+'" rx="4" fill="rgba(0,0,0,.13)"/>';
+  // caja
+  out+='<rect x="'+cX+'" y="'+cY+'" width="'+cW+'" height="'+cH+'" rx="4" fill="'+sf+'" stroke="'+sc+'" stroke-width="2"/>';
+  // detalles caja
+  out+='<line x1="'+cX+'" y1="'+(cY+cH*0.38)+'" x2="'+(cX+cW)+'" y2="'+(cY+cH*0.38)+'" stroke="'+sc+'" stroke-width="0.7" opacity="0.4"/>';
+  out+='<line x1="'+(cX+cW*0.5)+'" y1="'+cY+'" x2="'+(cX+cW*0.5)+'" y2="'+(cY+cH)+'" stroke="'+sc+'" stroke-width="0.7" opacity="0.4"/>';
+  // texto peso
+  out+='<text x="'+loadX+'" y="'+(cY+cH/2+5)+'" text-anchor="middle" font-size="12" font-weight="700" fill="'+sc+'" font-family="system-ui,sans-serif">'+peso+' ton</text>';
+  // eslingas
+  out+='<line x1="'+(cX+cW*0.28)+'" y1="'+cY+'" x2="'+loadX+'" y2="'+(loadY+12)+'" stroke="#888780" stroke-width="1.8"/>';
+  out+='<line x1="'+(cX+cW*0.72)+'" y1="'+cY+'" x2="'+loadX+'" y2="'+(loadY+12)+'" stroke="#888780" stroke-width="1.8"/>';
+
+  /* ── COTAS ── */
+  var cc='#185FA5';
+  // marcadores
+  out+='<defs>'+
+    '<marker id="a1" markerWidth="7" markerHeight="7" refX="3.5" refY="3.5" orient="auto"><path d="M0,1 L0,6 L6,3.5 Z" fill="'+cc+'"/></marker>'+
+    '<marker id="a2" markerWidth="7" markerHeight="7" refX="3.5" refY="3.5" orient="auto-start-reverse"><path d="M0,1 L0,6 L6,3.5 Z" fill="'+cc+'"/></marker>'+
+  '</defs>';
+
+  function cH2(x1,x2,y,lbl,sub){
+    var mx=(x1+x2)/2;
+    out+='<line x1="'+(x1+3)+'" y1="'+y+'" x2="'+(x2-3)+'" y2="'+y+'" stroke="'+cc+'" stroke-width="1.2" marker-end="url(#a1)" marker-start="url(#a2)"/>';
+    out+='<line x1="'+x1+'" y1="'+(y-9)+'" x2="'+x1+'" y2="'+(y+9)+'" stroke="'+cc+'" stroke-width="1.2"/>';
+    out+='<line x1="'+x2+'" y1="'+(y-9)+'" x2="'+x2+'" y2="'+(y+9)+'" stroke="'+cc+'" stroke-width="1.2"/>';
+    out+='<rect x="'+(mx-26)+'" y="'+(y-10)+'" width="52" height="17" rx="4" fill="white" stroke="'+cc+'" stroke-width="0.8"/>';
+    out+='<text x="'+mx+'" y="'+(y+4)+'" text-anchor="middle" font-size="11" font-weight="700" fill="'+cc+'" font-family="system-ui,sans-serif">'+lbl+'</text>';
+    if(sub)out+='<text x="'+mx+'" y="'+(y+20)+'" text-anchor="middle" font-size="9" fill="#888780" font-family="system-ui,sans-serif">'+sub+'</text>';
+  }
+  function cV2(x,y1,y2,lbl){
+    var my=(y1+y2)/2;
+    out+='<line x1="'+x+'" y1="'+(y1+3)+'" x2="'+x+'" y2="'+(y2-3)+'" stroke="'+cc+'" stroke-width="1.2" marker-end="url(#a1)" marker-start="url(#a2)"/>';
+    out+='<line x1="'+(x-9)+'" y1="'+y1+'" x2="'+(x+9)+'" y2="'+y1+'" stroke="'+cc+'" stroke-width="1.2"/>';
+    out+='<line x1="'+(x-9)+'" y1="'+y2+'" x2="'+(x+9)+'" y2="'+y2+'" stroke="'+cc+'" stroke-width="1.2"/>';
+    out+='<rect x="'+(x+11)+'" y="'+(my-9)+'" width="42" height="17" rx="4" fill="white" stroke="'+cc+'" stroke-width="0.8"/>';
+    out+='<text x="'+(x+32)+'" y="'+(my+5)+'" text-anchor="middle" font-size="11" font-weight="700" fill="'+cc+'" font-family="system-ui,sans-serif">'+lbl+'</text>';
+  }
+
+  // cota radio
+  cH2(BX,loadX,GY+38,radio+' m','Radio de trabajo');
+  // cota altura
+  cV2(loadX+cW/2+22,loadY+12,GY,altura+' m');
+  // línea guía punteada
+  out+='<line x1="'+loadX+'" y1="'+(cY+cH)+'" x2="'+loadX+'" y2="'+GY+'" stroke="'+cc+'" stroke-width="0.8" stroke-dasharray="4,3" opacity="0.4"/>';
+  // etiqueta altura
+  out+='<text x="'+(loadX+cW/2+36)+'" y="'+(loadY+12+(GY-loadY)/2+20)+'" text-anchor="start" font-size="9" fill="#888780" font-family="system-ui,sans-serif">Altura izaje</text>';
+
+  // cota pluma (paralela a la pluma)
+  var pmx=BX+Math.cos(ang)*plumaPx*0.52;
+  var pmy=(BY-92)-Math.sin(ang)*plumaPx*0.52;
+  var pdx=-Math.sin(ang)*16,pdy=-Math.cos(ang)*16;
+  out+='<rect x="'+(pmx+pdx-24)+'" y="'+(pmy+pdy-9)+'" width="48" height="17" rx="4" fill="white" stroke="#378ADD" stroke-width="0.8"/>';
+  out+='<text x="'+(pmx+pdx)+'" y="'+(pmy+pdy+5)+'" text-anchor="middle" font-size="11" font-weight="700" fill="#185FA5" font-family="system-ui,sans-serif">'+plumaLong+' m</text>';
+
+  /* ── SELLO ESTADO ── */
+  var sbx=W-82,sby=58;
+  out+='<rect x="'+(sbx-42)+'" y="'+(sby-24)+'" width="84" height="52" rx="10" fill="'+sf+'" stroke="'+sc+'" stroke-width="2.5"/>';
+  out+='<text x="'+sbx+'" y="'+(sby-6)+'" text-anchor="middle" font-size="9" fill="'+sc+'" font-family="system-ui,sans-serif" letter-spacing="1">USO CAP.</text>';
+  out+='<text x="'+sbx+'" y="'+(sby+14)+'" text-anchor="middle" font-size="18" font-weight="700" fill="'+sc+'" font-family="system-ui,sans-serif">'+pct+'%</text>';
+  out+='<text x="'+sbx+'" y="'+(sby+26)+'" text-anchor="middle" font-size="10" font-weight="700" fill="'+sc+'" font-family="system-ui,sans-serif">'+stLbl+'</text>';
+
+  /* ── VIENTO ── */
+  if(viento>0){
+    var vc=viento>72?'#A32D2D':viento>50?'#854F0B':'#3B6D11';
+    out+='<text x="'+(W-12)+'" y="'+(H-50)+'" text-anchor="end" font-size="10" fill="'+vc+'" font-family="system-ui,sans-serif">&#x1F4A8; Viento: '+viento+' km/h</text>';
+  }
+
+  /* ── TABLA DE DATOS ── */
+  var tx=W-10,ty=GY-8;
+  var rows=[['Carga',peso+' ton'],['Radio',radio+' m'],['Altura',altura+' m'],['Pluma',plumaLong+' m'],['Grúa',grua.nombre]];
+  var tw=145,th=rows.length*19+22;
+  out+='<rect x="'+(tx-tw)+'" y="'+(ty-th)+'" width="'+tw+'" height="'+th+'" fill="rgba(255,255,255,0.9)" stroke="#c8c8c4" stroke-width="0.8" rx="5"/>';
+  out+='<text x="'+(tx-tw/2)+'" y="'+(ty-th+14)+'" text-anchor="middle" font-size="9" font-weight="700" fill="#6b6b67" font-family="system-ui,sans-serif" letter-spacing="0.5">DATOS DE MANIOBRA</text>';
+  rows.forEach(function(row,ri){
+    var ry=ty-th+23+ri*19;
+    out+='<text x="'+(tx-tw+8)+'" y="'+ry+'" font-size="10" fill="#6b6b67" font-family="system-ui,sans-serif">'+row[0]+'</text>';
+    out+='<text x="'+(tx-8)+'" y="'+ry+'" text-anchor="end" font-size="10" font-weight="600" fill="#1a1a18" font-family="system-ui,sans-serif">'+row[1]+'</text>';
+    if(ri<rows.length-1)out+='<line x1="'+(tx-tw+4)+'" y1="'+(ry+5)+'" x2="'+(tx-4)+'" y2="'+(ry+5)+'" stroke="#e8e8e4" stroke-width="0.5"/>';
+  });
+
+  out+='</svg>';
+  return out;
+}
+
+/* ═══════════ MATH HTML ═══════════ */
+function buildMath(m,inp,itp){
+  var fi=inp.impacto,fp=inp.pluma,fs=inp.suelo;
+  var fiL={'1':'1.00 estático','1.05':'1.05 lento','1.1':'1.10 normal','1.15':'1.15 dinámico'}[String(fi)]||fi;
+  var fsL={'1':'1.00 firme','0.9':'0.90 compactado','0.75':'0.75 blando','0.6':'0.60 tableros'}[String(fs)]||fs;
+
+  var rows='';
+  itp.table.forEach(function(row){
+    var hi=(row[0]===itp.r1||row[0]===itp.r2)?'class="hi"':'';
+    rows+='<tr '+hi+'><td>'+row[0]+'</td><td>'+row[1]+'</td></tr>';
+  });
+
+  var s1='<div class="math-step"><div class="math-step-title"><span class="step-num">1</span>Interpolación lineal — tabla de capacidades</div>'+
+    '<table class="interp-table"><tr><th>Radio (m)</th><th>Cap. tabla (ton)</th></tr>'+rows+'</table>';
+  if(itp.t!==null){
+    s1+='<div class="math-formula" style="margin-top:8px">'+
+      '<span><span class="v">t</span> = ('+inp.radio+' − '+itp.r1+') ÷ ('+itp.r2+' − '+itp.r1+') = <span class="n">'+itp.t.toFixed(4)+'</span></span><br>'+
+      '<span><span class="v">Cap_tabla</span> = '+itp.c1+' + '+itp.t.toFixed(4)+' × ('+itp.c2+' − '+itp.c1+') = <span class="n">'+itp.raw.toFixed(3)+'</span> ton</span>'+
+      '<span class="r ok">Cap_tabla = '+itp.raw.toFixed(3)+' ton</span></div>';
+  } else {
+    s1+='<div class="math-formula" style="margin-top:8px">'+
+      '<span>Radio '+inp.radio+' m '+(itp.ext?'— fuera del rango (extrapolado)':'— en límite de tabla')+'</span>'+
+      '<span class="r ok">Cap_tabla = '+itp.raw.toFixed(3)+' ton</span></div>';
+    if(itp.ext)s1+='<p style="font-size:12px;color:var(--red-t);margin-top:5px">⚠ Valor extrapolado — verificar con fabricante.</p>';
+  }
+  s1+='</div>';
+
+  var s2='<div class="math-step"><div class="math-step-title"><span class="step-num">2</span>Factores de reducción</div>'+
+    '<div class="math-formula">'+
+    '<span><span class="v">f_pluma</span> = <span class="n">'+fp+'</span> ('+Math.round(fp*100)+'% extensión)</span><br>'+
+    '<span><span class="v">f_suelo</span> = <span class="n">'+fs+'</span> ('+fsL+')</span>'+
+    '<div class="divhr"></div>'+
+    '<span><span class="v">Cap_base</span> = '+itp.raw.toFixed(3)+' × '+fp+' × '+fs+' = <span class="n">'+itp.final.toFixed(3)+'</span> ton</span>'+
+    '<span class="r ok">Cap_base = '+itp.final.toFixed(3)+' ton</span></div></div>';
+
+  var s3='<div class="math-step"><div class="math-step-title"><span class="step-num">3</span>Carga efectiva con factor de impacto</div>'+
+    '<div class="math-formula">'+
+    '<span><span class="v">Peso_bruto</span> = <span class="n">'+inp.peso+'</span> ton</span><br>'+
+    '<span><span class="v">f_impacto</span> = <span class="n">'+fi+'</span> ('+fiL+')</span>'+
+    '<div class="divhr"></div>'+
+    '<span><span class="v">Carga_efectiva</span> = '+inp.peso+' × '+fi+' = <span class="n">'+inp.pesoEf.toFixed(3)+'</span> ton</span>'+
+    '<span class="r warn">Carga_efectiva = '+inp.pesoEf.toFixed(3)+' ton</span></div></div>';
+
+  var s4='<div class="math-step"><div class="math-step-title"><span class="step-num">4</span>Capacidad para esta maniobra</div>'+
+    '<div class="math-formula">'+
+    '<span><span class="v">f_maniobra</span> = <span class="n">'+m.fe+'</span> ('+m.fl+')</span>'+
+    '<div class="divhr"></div>'+
+    '<span><span class="v">Cap_maniobra</span> = '+itp.final.toFixed(3)+' × '+m.fe+' = <span class="n">'+m.capM.toFixed(3)+'</span> ton</span>'+
+    '<span class="r ok">Cap_maniobra = '+m.capM.toFixed(3)+' ton</span></div></div>';
+
+  var s5='<div class="math-step"><div class="math-step-title"><span class="step-num">5</span>Porcentaje de uso de capacidad</div>'+
+    '<div class="math-formula">'+
+    '<span><span class="v">Uso (%)</span> = (Carga_efectiva ÷ Cap_maniobra) × 100</span><br>'+
+    '<span><span class="v">Uso (%)</span> = ('+inp.pesoEf.toFixed(3)+' ÷ '+m.capM.toFixed(3)+') × 100</span>'+
+    '<div class="divhr"></div>'+
+    '<span class="r '+m.s+'">Uso = '+m.pct+'% — '+(m.s==='ok'?'✓ Dentro del rango seguro':m.s==='warn'?'⚠ Cercano al límite':'✗ Supera el límite')+'</span></div>'+
+    '<div class="sem-row">'+
+    '<div class="sem ok"><div class="sem-lbl ok">Seguro</div><div class="sem-range">0% – 75%</div></div>'+
+    '<div class="sem warn"><div class="sem-lbl warn">Precaución</div><div class="sem-range">76% – 90%</div></div>'+
+    '<div class="sem nok"><div class="sem-lbl nok">No recomendado</div><div class="sem-range">&gt; 90%</div></div>'+
+    '</div></div>';
+
+  var s6='';
+  if(inp.viento>0){
+    var lv=72,uv=Math.round(inp.viento/lv*100),sv=inp.viento<=50?'ok':inp.viento<=72?'warn':'nok';
+    s6='<div class="math-step"><div class="math-step-title"><span class="step-num">6</span>Verificación de viento</div>'+
+      '<div class="math-formula">'+
+      '<span><span class="v">Viento_medido</span> = <span class="n">'+inp.viento+'</span> km/h</span><br>'+
+      '<span><span class="v">Límite_fabricante</span> = <span class="n">'+lv+'</span> km/h (típico Liebherr)</span><br>'+
+      '<span><span class="v">Uso_viento</span> = '+inp.viento+' ÷ '+lv+' × 100 = <span class="n">'+uv+'%</span></span>'+
+      '<div class="divhr"></div>'+
+      '<span class="r '+sv+'">'+(sv==='ok'?'✓ Dentro del límite operacional':sv==='warn'?'⚠ Viento elevado — verificar':'✗ EXCEDE LÍMITE — SUSPENDER MANIOBRA')+'</span></div></div>';
+  }
+  return s1+s2+s3+s4+s5+s6;
+}
+
+/* ═══════════ CALCULAR ═══════════ */
+function calcular(){
+  var peso=parseFloat(document.getElementById('peso').value);
+  var radio=parseFloat(document.getElementById('radio').value);
+  var altura=parseFloat(document.getElementById('altura').value);
+  var viento=parseFloat(document.getElementById('viento').value)||0;
+  var suelo=parseFloat(document.getElementById('suelo').value);
+  var impacto=parseFloat(document.getElementById('impacto').value);
+  var pluma=parseFloat(document.getElementById('pluma').value);
+  if(!peso||!radio||!altura){alert('Completa peso, radio y altura de izaje');return;}
+
+  var grua=gById(gruaSelId)||GP[0];
+  lastGrua=grua;
+  var pesoEf=peso*impacto;
+  var itp=getInterp(radio,grua.cap,pluma,suelo);
+  var capBase=itp.final;
+  lastInp={peso:peso,radio:radio,altura:altura,viento:viento,suelo:suelo,impacto:impacto,pluma:pluma,pesoEf:pesoEf};
+
+  var defs=[
+    {n:'Izaje simple',      desc:'Una grúa — pluma al '+(pluma*100)+'%, sin extensiones',fe:1.0, fl:'sin modificación (×1.00)',
+     warns:[],det:{'Capacidad disponible':'','Carga efectiva':pesoEf.toFixed(2)+' ton','Long. pluma':Math.round(grua.boom*pluma)+' m','Contrapeso':grua.cpeso+' ton','Radio':radio+' m','Altura':altura+' m','Grúa':grua.nombre}},
+    {n:'Izaje con superlift',desc:'Contrapeso superlift extendido — +25% capacidad',fe:1.25,fl:'superlift +25% (×1.25)',
+     warns:['Verificar espacio trasero (mín. '+Math.round(grua.boom*0.25)+' m)','Montaje adicional aprox. 30–60 min'],
+     det:{'Capacidad disponible':'','Carga efectiva':pesoEf.toFixed(2)+' ton','Contrapeso superlift':(grua.cpeso*1.6).toFixed(1)+' ton','Espacio trasero':Math.round(grua.boom*0.25)+' m','Radio':radio+' m','Grúa':grua.nombre}},
+    {n:'Izaje en tándem',   desc:'Dos grúas coordinadas — carga distribuida 50/50',fe:1.9, fl:'tándem ×1.90',
+     warns:['Plan de izaje en tándem requerido y firmado','Comunicación radial constante','Rigger certificado (coordinador principal)'],
+     det:{'Capacidad total':'','Carga por grúa':(pesoEf/2).toFixed(2)+' ton','Uso c/grúa':Math.round(pesoEf/2/capBase*100)+'%','Carga total':pesoEf.toFixed(2)+' ton','Radio':radio+' m','Grúa principal':grua.nombre}},
+    {n:'Izaje con jib fijo', desc:'Extensión de jib — mayor alcance, capacidad −28%',fe:0.72,fl:'jib fijo (×0.72)',
+     warns:['Capacidad reducida al montar jib','Verificar tabla de cargas con jib del fabricante'],
+     det:{'Capacidad con jib':'','Carga efectiva':pesoEf.toFixed(2)+' ton','Alcance adicional':'8–15 m','Pluma + jib':Math.round(grua.boom*pluma)+'+jib m','Radio':radio+' m','Grúa':grua.nombre}}
+  ];
+
+  var maniobras=defs.map(function(d){
+    var capM=capBase*d.fe;
+    var pct=Math.round(pesoEf/capM*100);
+    var s2=st(pct);
+    var det2=JSON.parse(JSON.stringify(d.det));
+    det2[Object.keys(det2)[0]]=capM.toFixed(2)+' ton';
+    var warns2=d.warns.slice();
+    if(viento>50){warns2.unshift('Viento '+viento+' km/h — verificar límite fabricante (típico 72 km/h)');if(s2==='ok')s2='warn';}
+    if(viento>72){warns2.unshift('⚠ VIENTO EXCEDE LÍMITE — SUSPENDER');s2='nok';}
+    lastInp.pctManiobra=pct;
+    return{nombre:d.n,desc:d.desc,pct:pct,capM:capM,s:s2,det:det2,warns:warns2,fe:d.fe,fl:d.fl,
+           mathHTML:buildMath({capM:capM,pct:pct,s:s2,fe:d.fe,fl:d.fl},lastInp,itp),
+           croquis:buildCroquis(d.n,Object.assign({},lastInp,{pctManiobra:pct}),grua)};
+  });
+  maniobras.sort(function(a,b){var o={ok:0,warn:1,nok:2};return o[a.s]-o[b.s];});
+  mCalc=maniobras;
+  renderRes();
+  goTab('resultado');
+}
+
+/* ═══════════ RENDER RESULTADOS ═══════════ */
+function renderRes(){
+  var c=document.getElementById('res-container');c.innerHTML='';
+  mCalc.forEach(function(m,i){
+    var d=document.createElement('div');d.className='rcard '+m.s;
+    d.onclick=function(){showDtl(i);};
+    d.innerHTML='<div class="rc-hdr"><span class="rc-name '+m.s+'">'+m.nombre+'</span><span class="badge '+m.s+'">'+stLabel(m.s)+'</span></div>'+
+      '<p style="font-size:13px;color:var(--text2);margin-bottom:8px">'+m.desc+'</p>'+
+      '<div class="pbar-row"><span>Uso de capacidad</span><span>'+m.pct+'% de '+m.capM.toFixed(2)+' ton</span></div>'+
+      '<div class="pbar-bg"><div class="pbar '+m.s+'" style="width:'+Math.min(m.pct,100)+'%"></div></div>'+
+      '<p style="font-size:11px;color:var(--text2);margin-top:6px">Haz clic para ver croquis, detalle y cálculos</p>';
+    c.appendChild(d);
+  });
+  document.getElementById('dtl-panel').classList.add('hidden');
+}
+
+function showDtl(i){
+  var m=mCalc[i];
+  var detI=Object.keys(m.det).map(function(k){
+    var cls=(k.toLowerCase().indexOf('uso')>=0||k.toLowerCase().indexOf('capacidad')>=0)?m.s:'';
+    return'<div class="di"><div class="di-lbl">'+k+'</div><div class="di-val '+cls+'">'+m.det[k]+'</div></div>';
+  }).join('');
+  var warnI=m.warns.map(function(w){
+    return'<div class="wi'+(w.indexOf('SUSPENDER')>=0||w.indexOf('EXCEDE')>=0?' err':'')+'">⚠ '+w+'</div>';
+  }).join('');
+
+  var cId='c_'+i,mId='m_'+i;
+  var p=document.getElementById('dtl-panel');
+  p.className='dtl';
+  p.innerHTML=
+    '<div class="rc-hdr" style="margin-bottom:10px">'+
+      '<span style="font-size:16px;font-weight:700;color:var(--text)">'+m.nombre+'</span>'+
+      '<span class="badge '+m.s+'">'+stLabel(m.s)+'</span>'+
+    '</div>'+
+
+    // ── CROQUIS ──
+    '<div class="block">'+
+      '<div class="block-hdr" onclick="toggleBlock(\''+cId+'\',this)">'+
+        '<div class="block-hdr-left"><div class="block-icon" style="background:#3B6D11">📐</div>Croquis técnico ilustrado</div>'+
+        '<button class="block-toggle">▲ Ocultar</button>'+
+      '</div>'+
+      '<div class="block-body open" id="'+cId+'" style="padding:10px">'+m.croquis+'</div>'+
+    '</div>'+
+
+    // ── DATOS ──
+    '<div class="dtl-g">'+detI+'</div>'+
+    (m.warns.length?'<div style="margin-top:8px">'+warnI+'</div>':'')+
+
+    // ── CÁLCULOS ──
+    '<div class="block" style="margin-top:12px">'+
+      '<div class="block-hdr" onclick="toggleBlock(\''+mId+'\',this)">'+
+        '<div class="block-hdr-left"><div class="block-icon" style="background:var(--blue)">∑</div>Desglose matemático del cálculo</div>'+
+        '<button class="block-toggle">▼ Ver cálculo</button>'+
+      '</div>'+
+      '<div class="block-body" id="'+mId+'">'+m.mathHTML+'</div>'+
+    '</div>';
+
+  p.classList.remove('hidden');
+  p.scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+
+function toggleBlock(id,hdr){
+  var body=document.getElementById(id);
+  var open=body.classList.toggle('open');
+  var btn=hdr.querySelector('.block-toggle');
+  if(btn)btn.textContent=open?btn.textContent.replace('▼','▲').replace('Ver','Ocultar'):btn.textContent.replace('▲','▼').replace('Ocultar','Ver');
+}
+
+/* ═══════════ TABS ═══════════ */
+function goTab(tab){
+  ['datos','gruas','resultado','checklist'].forEach(function(t){
+    document.getElementById('tab-'+t).classList.toggle('hidden',t!==tab);
+  });
+  document.querySelectorAll('.tab').forEach(function(el,i){
+    el.classList.toggle('active',['datos','gruas','resultado','checklist'][i]===tab);
+  });
+  if(tab==='checklist')renderChecklist();
+}
+
+/* ═══════════ CHECKLIST ═══════════ */
+function renderChecklist(){
+  var c=document.getElementById('chk-items');c.innerHTML='';
+  CHECKS.forEach(function(txt,i){
+    if(chkState[i]===undefined)chkState[i]=false;
+    var d=document.createElement('div');d.className='chk-item';
+    d.onclick=function(){chkState[i]=!chkState[i];renderChecklist();};
+    d.innerHTML='<div class="chk-box'+(chkState[i]?' chked':'')+'"></div><span>'+txt+'</span>';
+    c.appendChild(d);
+  });
+  var done=Object.values(chkState).filter(Boolean).length,total=CHECKS.length;
+  var pct=Math.round(done/total*100),s=pct===100?'ok':pct>=60?'warn':'nok';
+  var lbl=pct===100?'Listo para operar':pct>=60?'En progreso':'Incompleto';
+  document.getElementById('chk-status').innerHTML=
+    '<div class="rcard '+s+'" style="cursor:default"><div class="rc-hdr"><span class="rc-name '+s+'">'+done+' / '+total+' ítems</span><span class="badge '+s+'">'+lbl+'</span></div>'+
+    '<div class="pbar-row"><span>Avance</span><span>'+pct+'%</span></div>'+
+    '<div class="pbar-bg"><div class="pbar '+s+'" style="width:'+pct+'%"></div></div></div>';
+}
+
+/* ═══════════ INIT ═══════════ */
+renderTipoBtns();
+renderGruasPredef();
+</script>
+</body>
+</html>
